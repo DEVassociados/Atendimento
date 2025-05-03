@@ -1,0 +1,68 @@
+{
+  "saudacoes": {
+    "Olá, bom dia! ☀️": [
+      "Olá, bom dia! ☀️"
+    ],
+    "Olá, boa tarde! ⛅️": [
+      "Olá, boa tarde! ⛅️"
+    ],
+    "Olá, boa noite! 🌙": [
+      "Olá, boa noite! 🌙"
+    ],
+    "Pedir para falar com ADM": [
+      "Sou o Lucas, da agência de marketing integrado DEV.associados. Como você está hoje?\n",
+      "Gostaria de falar com o responsável do setor administrativo, pois tenho algumas informações e propostas que podem ser muito úteis para a sua empresa.",
+      "Agradeço pela ajuda!🤝"
+    ],
+    "Falando com ADM": [
+      "Sou *o Lucas*, _da agência de marketing integrado_ *DEV.associados*. Como você está hoje?",
+      "Estou entrando em contato, pois identifiquei algumas oportunidades no marketing da *sua empresa* que podem ser exploradas para *aumentar suas vendas* e *visibilidade no mercado.*",
+      "_Gostaria de marcar_*uma reunião*  _para discutirmos como_ *podemos ajudar* _a potencializar seus_ *resultados*. _Tenho algumas estratégias em mente que podem fazer a_ *diferença!*",
+      "Qual seria *o melhor dia e horário* para você? Estou ansioso para conversarmos e ajudarmos a sua empresa a *alcançar novos patamares!*"
+    ],
+    "Orçamento": [
+      "Algum retono quanto ao orçamento?"
+    ],
+    "negativa": [
+      "Certo, qualquer coisa estaremos à disposição e caso deseje, acompanhe o nosso insta: https://www.instagram.com/dev.associados/"
+    ]
+  },
+  "emojiData": {
+    "Carinhas": [
+      "😀",
+      "😃",
+      "😁",
+      "😂",
+      "😶‍🌫️",
+      "😴",
+      "🥳",
+      "🤩",
+      "🤣",
+      "😱",
+      "😰",
+      "🥲",
+      "🤭",
+      "👀",
+      "🧐",
+      "😌",
+      "😎"
+    ],
+    "Clima": [
+      "☀️",
+      "⛅️",
+      "🌙"
+    ],
+    "Mãos": [
+      "👍",
+      "👏",
+      "✍️",
+      "🤝"
+    ],
+    "Outros": [
+      "❤️",
+      "🙈"
+    ]
+  },
+  "themeMode": "auto",
+  "primaryColor": "#f57c00"
+}
