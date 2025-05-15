@@ -10,6 +10,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
+.drag-ghost {
+  opacity: 0.4;
+  background: #f0f0f0;
+}
+	
 .card {
   background: white;
   padding: 15px;
@@ -476,5 +481,15 @@ function renameSection(oldName) {
 }
 
 </script>
+<!-- SortableJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+  // Inicializa a funcionalidade de arrastar nas caixas
+  new Sortable(document.getElementById('sections'), {
+    animation: 150,
+    ghostClass: 'drag-ghost'
+  });
+</script>
+
 </body>
 </html>
