@@ -1,14 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FtYWRhXzIiIGRhdGEtbmFtZT0iQ2FtYWRhIDIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU0Mi45MyA0MDUuNzYiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICNlNjUzMDA7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogI2ZmNjcxZDsKICAgICAgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPGcgaWQ9IkNhbWFkYV8xLTIiIGRhdGEtbmFtZT0iQ2FtYWRhIDEiPgogICAgPGc+CiAgICAgIDxjaXJjbGUgY2xhc3M9ImNscy0yIiBjeD0iMzEyLjA0IiBjeT0iODMuMzIiIHI9IjcxLjY4Ii8+CiAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iODkuMzciIHk9IjEyOS40NSIgd2lkdGg9Ijc4LjkyIiBoZWlnaHQ9IjI4NS40NyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjMwLjIgLTExLjM4KSByb3RhdGUoNDUpIi8+CiAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iLTEwLjciIHk9Ijg3LjY0IiB3aWR0aD0iMjgxLjI5IiBoZWlnaHQ9IjgwLjY4IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMjguNTUgLTU0LjQpIHJvdGF0ZSg0NSkiLz4KICAgICAgPHJlY3QgY2xhc3M9ImNscy0yIiB4PSIyMDcuMTIiIHk9IjI2NS44IiB3aWR0aD0iMjAxLjcxIiBoZWlnaHQ9IjgwLjQyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDYuNTggLTEyOC4xNCkgcm90YXRlKDQ1KSIvPgogICAgICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjM3OS4xNCIgeT0iMTQ1Ljg0IiB3aWR0aD0iNzkuMzgiIGhlaWdodD0iMjcxLjYyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMjEuODMgLTIxMy42Nykgcm90YXRlKDQ1KSIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+">
-
-
+<meta charset="utf-8"/>
+<link href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FtYWRhXzIiIGRhdGEtbmFtZT0iQ2FtYWRhIDIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU0Mi45MyA0MDUuNzYiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICNlNjUzMDA7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogI2ZmNjcxZDsKICAgICAgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPGcgaWQ9IkNhbWFkYV8xLTIiIGRhdGEtbmFtZT0iQ2FtYWRhIDEiPgogICAgPGc+CiAgICAgIDxjaXJjbGUgY2xhc3M9ImNscy0yIiBjeD0iMzEyLjA0IiBjeT0iODMuMzIiIHI9IjcxLjY4Ii8+CiAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iODkuMzciIHk9IjEyOS40NSIgd2lkdGg9Ijc4LjkyIiBoZWlnaHQ9IjI4NS40NyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjMwLjIgLTExLjM4KSByb3RhdGUoNDUpIi8+CiAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iLTEwLjciIHk9Ijg3LjY0IiB3aWR0aD0iMjgxLjI5IiBoZWlnaHQ9IjgwLjY4IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMjguNTUgLTU0LjQpIHJvdGF0ZSg0NSkiLz4KICAgICAgPHJlY3QgY2xhc3M9ImNscy0yIiB4PSIyMDcuMTIiIHk9IjI2NS44IiB3aWR0aD0iMjAxLjcxIiBoZWlnaHQ9IjgwLjQyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDYuNTggLTEyOC4xNCkgcm90YXRlKDQ1KSIvPgogICAgICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjM3OS4xNCIgeT0iMTQ1Ljg0IiB3aWR0aD0iNzkuMzgiIGhlaWdodD0iMjcxLjYyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMjEuODMgLTIxMy42Nykgcm90YXRlKDQ1KSIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+" rel="icon" type="image/svg+xml"/>
 <title>DEV.associados</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
 <style>
 .drag-ghost {
   opacity: 0.4;
@@ -116,55 +114,64 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
 </head>
 <body>
 <header>
-<a href="https://idolink.com.br/devassociados" target="_blank" style="text-decoration: none; color: inherit;">
- <h1>DEV.associados<h1>
+<a href="https://idolink.com.br/devassociados" style="text-decoration: none; color: inherit;" target="_blank">
+<h1>DEV.associados<h1>
 <h4>sua agência de marketing integrado</h4>
-</a>
+</h1></h1></a>
 </header>
 <div class="container">
-  <div class="controls">
-    <input type="text" placeholder="Buscar..." id="searchBox" oninput="filterSections()">
-    <input type="text" placeholder="Nova saudação..." id="newSection">
-    <button onclick="addSection()">Adicionar</button>
-    <button onclick="openEmojiManager()">Gerenciar Emojis</button>
-    <button onclick="exportData()">Exportar</button>
-    <button onclick="importData()">Importar</button>
-    <label>Cor<input type="color" onchange="changePrimaryColor(this.value)"></label>
-    <label>
-      <select id="themeSelector" onchange="changeTheme(this.value)">
-        <option value="auto">🌑</option>
-        <option value="light">☀️</option>
-        <option value="dark">🌙</option>
-      </select>
-    </label>
-    <button onclick="resetConfig()">Redefinir</button>
-    <input type="file" id="fileInput" style="display:none" onchange="handleFile(event)">
-  </div>
-  <div class="grid" id="sections"></div>
+<div class="controls">
+<input id="searchBox" oninput="filterSections()" placeholder="Buscar..." type="text"/>
+<input id="newSection" placeholder="Nova saudação..." type="text"/>
+<button onclick="addSection()">Adicionar</button>
+<button onclick="openEmojiManager()">Gerenciar Emojis</button>
+<button onclick="exportData()">Exportar</button>
+<button onclick="importData()">Importar</button>
+<label>Cor<input onchange="changePrimaryColor(this.value)" type="color"/></label>
+<label>
+<select id="themeSelector" onchange="changeTheme(this.value)">
+<option value="auto">🌑</option>
+<option value="light">☀️</option>
+<option value="dark">🌙</option>
+</select>
+</label>
+<button onclick="resetConfig()">Redefinir</button>
+<input id="fileInput" onchange="handleFile(event)" style="display:none" type="file"/>
+
+<select id="groupSelector" onchange="changeGroup(this.value)"></select>
+<button onclick="createGroup()">+ Grupo</button>
+<button onclick="renameGroup()">Renomear Grupo</button>
+<button onclick="deleteGroup()">Excluir Grupo</button>
+</div>
+<div class="grid" id="sections"></div>
 </div>
 <div id="emojiManagerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
-  <div style="background:var(--color-background); color:var(--color-text); padding:20px; border-radius:16px; max-width:500px; width:90%; max-height:90%; overflow-y:auto; position:relative;">
-    <h2>Gerenciar Emojis</h2>
-    <div id="emojiCategories"></div>
-    <button class="emoji-button" onclick="addEmojiCategory()">+ Nova Categoria</button>
-    <br><br>
-    <button class="emoji-button" onclick="closeEmojiManager()">Fechar</button>
-  </div>
+<div style="background:var(--color-background); color:var(--color-text); padding:20px; border-radius:16px; max-width:500px; width:90%; max-height:90%; overflow-y:auto; position:relative;">
+<h2>Gerenciar Emojis</h2>
+<div id="emojiCategories"></div>
+<button class="emoji-button" onclick="addEmojiCategory()">+ Nova Categoria</button>
+<br/><br/>
+<button class="emoji-button" onclick="closeEmojiManager()">Fechar</button>
+</div>
 </div>
 <script>
 let emojiData = {
   "Carinhas": ["😀", "😃", "😁", "😂"]
 };
-let data = {
-  "Bom dia": ["Olá, bom dia! ☀️"],
-  "Boa tarde": ["Olá, boa tarde! ⛅️"],
-  "Boa noite": ["Olá, boa noite! 🌙"]
+let groups = {
+  "Padrão": {
+    "Bom dia": ["Olá, bom dia! ☀️"],
+    "Boa tarde": ["Olá, boa tarde! ⛅️"],
+    "Boa noite": ["Olá, boa noite! 🌙"]
+  }
 };
+let currentGroup = "Padrão";
 let currentTextId = null;
 
 function saveToLocalStorage() {
   const allData = {
-    saudacoes: data,
+    groups,
+    currentGroup,
     emojiData,
     themeMode: localStorage.getItem('themeMode') || 'auto',
     primaryColor: localStorage.getItem('primaryColor') || '#f57c00'
@@ -172,11 +179,82 @@ function saveToLocalStorage() {
   localStorage.setItem('saudacoesData', JSON.stringify(allData));
 }
 
+
+function populateGroupSelector() {
+  const selector = document.getElementById('groupSelector');
+  selector.innerHTML = '';
+  Object.keys(groups).forEach(group => {
+    const opt = document.createElement('option');
+    opt.value = group;
+    opt.textContent = group;
+    if (group === currentGroup) opt.selected = true;
+    selector.appendChild(opt);
+  });
+}
+
+function changeGroup(group) {
+  currentGroup = group;
+  saveToLocalStorage();
+  populateGroupSelector(); render();
+}
+
+function createGroup() {
+  const name = prompt("Nome do novo grupo:");
+  if (name && !groups[name]) {
+    groups[name] = {};
+    currentGroup = name;
+    saveToLocalStorage();
+    populateGroupSelector();
+    render();
+  }
+}
+
+function renameGroup() {
+  const newName = prompt("Novo nome para o grupo:", currentGroup);
+  if (newName && newName !== currentGroup) {
+    if (groups[newName]) {
+      alert("Já existe um grupo com esse nome!");
+      return;
+    }
+    groups[newName] = groups[currentGroup];
+    delete groups[currentGroup];
+    currentGroup = newName;
+    saveToLocalStorage();
+    populateGroupSelector();
+    render();
+  }
+}
+
+function deleteGroup() {
+  const options = [
+    "Cancelar",
+    "Excluir apenas o grupo (manter saudações)",
+    "Excluir grupo e todas as saudações"
+  ];
+  const choice = prompt(`Deseja excluir o grupo "${currentGroup}"?\n0 - ${options[0]}\n1 - ${options[1]}\n2 - ${options[2]}`);
+
+  if (choice === "1") {
+    const copy = groups[currentGroup];
+    delete groups[currentGroup];
+    Object.assign(groups["Padrão"] ||= {}, copy);
+  } else if (choice === "2") {
+    delete groups[currentGroup];
+  } else {
+    return;
+  }
+
+  currentGroup = Object.keys(groups)[0] || "Padrão";
+  saveToLocalStorage();
+  populateGroupSelector();
+  render();
+}
+
+
 function loadFromLocalStorage() {
   const saved = localStorage.getItem('saudacoesData');
   if (saved) {
     const parsed = JSON.parse(saved);
-    data = parsed.saudacoes || {};
+    groups = parsed.groups || { "Padrão": {} }; currentGroup = parsed.currentGroup || "Padrão";
     emojiData = parsed.emojiData || { "Carinhas": ["😀", "😃", "😁", "😂"] };
   }
 }
@@ -184,7 +262,7 @@ function loadFromLocalStorage() {
 function render() {
   const grid = document.getElementById('sections');
   grid.innerHTML = '';
-  Object.entries(data).forEach(([title, messages]) => {
+  Object.entries(groups[currentGroup] || {}).forEach(([title, messages]) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `<h3>${title}</h3>` +
@@ -231,14 +309,14 @@ function refreshAllEmojiMenus() {
 }
 
 function setActiveTextId(id) { currentTextId = id; }
-function updateMessage(section, i, val) { data[section][i] = val; saveToLocalStorage(); }
-function addMessage(section) { data[section].push('Nova saudação...'); saveToLocalStorage(); render(); }
-function removeMessage(section) { if (data[section].length > 1) { data[section].pop(); saveToLocalStorage(); render(); } }
-function removeSection(section) { delete data[section]; saveToLocalStorage(); render(); }
+function updateMessage(section, i, val) { groups[currentGroup][section][i] = val; saveToLocalStorage(); }
+function addMessage(section) { groups[currentGroup][section].push('Nova saudação...'); saveToLocalStorage(); render(); }
+function removeMessage(section) { if (groups[currentGroup][section].length > 1) { groups[currentGroup][section].pop(); saveToLocalStorage(); render(); } }
+function removeSection(section) { delete groups[currentGroup][section]; saveToLocalStorage(); render(); }
 function addSection() {
   const name = document.getElementById('newSection').value.trim();
-  if (name && !data[name]) {
-    data[name] = ['Nova saudação...'];
+  if (name && !groups[currentGroup][name]) {
+    groups[currentGroup][name] = ['Nova saudação...'];
     document.getElementById('newSection').value = '';
     saveToLocalStorage();
     render();
@@ -469,12 +547,12 @@ window.onload = () => {
 function renameSection(oldName) {
   const newName = prompt("Digite o novo nome para a saudação:", oldName);
   if (newName && newName !== oldName) {
-    if (data[newName]) {
+    if (groups[currentGroup][newName]) {
       alert("Já existe uma saudação com esse nome!");
       return;
     }
-    data[newName] = data[oldName];
-    delete data[oldName];
+    groups[currentGroup][newName] = groups[currentGroup][oldName];
+    delete groups[currentGroup][oldName];
     saveToLocalStorage();
     render();
   }
@@ -490,6 +568,5 @@ function renameSection(oldName) {
     ghostClass: 'drag-ghost'
   });
 </script>
-
 </body>
 </html>
