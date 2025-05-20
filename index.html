@@ -110,6 +110,30 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
   margin-right: 8px;
 }
 
+
+.card.pinned {
+  border: 2px dashed var(--color-primary);
+  background-color: #fff9e6;
+  opacity: 0.9;
+}
+.card .pin-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.card .select-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transform: scale(1.2);
+}
 </style>
 </head>
 <body>
@@ -125,8 +149,6 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
 <input id="newSection" placeholder="Nova saudação..." type="text"/>
 <button onclick="addSection()">Adicionar</button>
 <button onclick="openEmojiManager()">Gerenciar Emojis</button>
-<button onclick="exportData()">Exportar</button>
-<button onclick="importData()">Importar</button>
 <label>Cor<input onchange="changePrimaryColor(this.value)" type="color"/></label>
 <label>
 <select id="themeSelector" onchange="changeTheme(this.value)">
@@ -135,14 +157,18 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
 <option value="dark">🌙</option>
 </select>
 </label>
+
+<button onclick="exportarConfiguracoes()">⬇️ Exportar Configurações</button>
+<button onclick="importarConfiguracoes()">⬆️ Importar Configurações</button>
+
 <button onclick="resetConfig()">Redefinir</button>
 <input id="fileInput" onchange="handleFile(event)" style="display:none" type="file"/>
-
 <select id="groupSelector" onchange="changeGroup(this.value)"></select>
 <button onclick="createGroup()">+ Grupo</button>
 <button onclick="renameGroup()">Renomear Grupo</button>
 <button onclick="deleteGroup()">Excluir Grupo</button>
-</div>
+<button onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
+<button onclick="moveSelectedSections()">Mover selecionados</button></div>
 <div class="grid" id="sections"></div>
 </div>
 <div id="emojiManagerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
@@ -265,7 +291,10 @@ function render() {
   Object.entries(groups[currentGroup] || {}).forEach(([title, messages]) => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<h3>${title}</h3>` +
+    card.innerHTML = `<input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
+<h3>${title}</h3>
+      <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
+` +
       messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('') +
       `<div class="actions">
         <button onclick="addMessage('${title}')">+ Caixa</button>
@@ -538,12 +567,110 @@ window.addEventListener('click', function(e) {
   }
 });
 
+
+let isSelecting = false;
+let startX, startY;
+let selectionBox;
+
+document.addEventListener('mousedown', e => {
+  if (e.target.closest('.card')) return;
+  isSelecting = true;
+  selectionBox = document.createElement('div');
+  selectionBox.style.cssText = 'position:fixed;border:2px dashed var(--color-primary);background:rgba(255,165,0,0.2);z-index:9999;';
+  document.body.appendChild(selectionBox);
+  startX = e.clientX;
+  startY = e.clientY;
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isSelecting) return;
+  const x = Math.min(e.clientX, startX);
+  const y = Math.min(e.clientY, startY);
+  const w = Math.abs(e.clientX - startX);
+  const h = Math.abs(e.clientY - startY);
+  Object.assign(selectionBox.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
+
+  document.querySelectorAll('.card').forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const overlap = !(rect.right < x || rect.left > x + w || rect.bottom < y || rect.top > y + h);
+    const title = card.querySelector('h3')?.innerText;
+    if (overlap && title) selectedSections.add(title);
+  });
+  render();
+});
+
+document.addEventListener('mouseup', () => {
+  if (selectionBox) selectionBox.remove();
+  isSelecting = false;
+});
+
+
+function exportarConfiguracoes() {
+  const configuracoes = {
+    tema: localStorage.getItem("themeMode") || "auto",
+    corPrimaria: localStorage.getItem("primaryColor") || "#f57c00",
+    grupos: groups,
+    grupoAtual: currentGroup,
+    emojis: emojiData
+  };
+  const blob = new Blob([JSON.stringify(configuracoes, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "configuracoes_saudacoes.json";
+  a.click();
+}
+
+function importarConfiguracoes() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const config = JSON.parse(reader.result);
+        if (config.tema) {
+          localStorage.setItem("themeMode", config.tema);
+          document.getElementById("themeSelector").value = config.tema;
+          applyTheme(config.tema);
+        }
+        if (config.corPrimaria) {
+          changePrimaryColor(config.corPrimaria);
+        }
+        if (config.grupos) groups = config.grupos;
+        if (config.grupoAtual) currentGroup = config.grupoAtual;
+        if (config.emojis) emojiData = config.emojis;
+        saveToLocalStorage();
+        render();
+      } catch (err) {
+        alert("Erro ao importar configurações: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
 window.onload = () => {
   loadFromLocalStorage();
   loadTheme();
   render();
   autoUpdateTheme();
 }
+
+function excluirSelecionadas() {
+  const cards = document.querySelectorAll('.select-toggle:checked');
+  cards.forEach(cb => {
+    const title = cb.closest('.card')?.querySelector('h3')?.innerText;
+    if (title) delete groups[currentGroup][title];
+  });
+  saveToLocalStorage();
+  render();
+}
+
+
 function renameSection(oldName) {
   const newName = prompt("Digite o novo nome para a saudação:", oldName);
   if (newName && newName !== oldName) {
@@ -560,10 +687,77 @@ function renameSection(oldName) {
 
 </script>
 <!-- SortableJS CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js">
+new Sortable(document.getElementById('sections'), {
+    filter: '.pinned',
+    onMove: evt => !evt.related.classList.contains('pinned'),
+  animation: 150,
+  ghostClass: 'drag-ghost',
+  onMove: evt => {
+    return !evt.related.classList.contains('pinned');
+  }
+});
+</script>
 <script>
+let pinnedSections = JSON.parse(localStorage.getItem('pinnedSections') || '{}');
+let selectedSections = new Set();
+
+function togglePin(section) {
+  pinnedSections[section] = !pinnedSections[section];
+  localStorage.setItem('pinnedSections', JSON.stringify(pinnedSections));
+  render();
+}
+
+function toggleSectionSelection(section) {
+  if (selectedSections.has(section)) {
+    selectedSections.delete(section);
+  } else {
+    selectedSections.add(section);
+  }
+  render();
+}
+
+function moveSelectedSections() {
+  const items = Array.from(selectedSections);
+  if (items.length === 0) {
+    alert("Nenhuma saudação selecionada.");
+    return;
+  }
+
+  const groupNames = Object.keys(groups).filter(g => g !== currentGroup);
+  const options = groupNames.map((g, i) => `${i + 1} - ${g}`).join('\n');
+  const choice = prompt(`Mover saudação(s) para:
+${options}
+0 - Novo grupo`);
+
+  if (choice === null) return;
+
+  let destino = null;
+  if (choice === "0") {
+    const nomeNovo = prompt("Nome do novo grupo:");
+    if (!nomeNovo) return;
+    groups[nomeNovo] = {};
+    destino = nomeNovo;
+  } else {
+    const idx = parseInt(choice) - 1;
+    if (!groupNames[idx]) return alert("Grupo inválido.");
+    destino = groupNames[idx];
+  }
+
+  items.forEach(section => {
+    groups[destino][section] = groups[currentGroup][section];
+    delete groups[currentGroup][section];
+    selectedSections.delete(section);
+  });
+
+  saveToLocalStorage();
+  render();
+}
+
   // Inicializa a funcionalidade de arrastar nas caixas
   new Sortable(document.getElementById('sections'), {
+    filter: '.pinned',
+    onMove: evt => !evt.related.classList.contains('pinned'),
     animation: 150,
     ghostClass: 'drag-ghost'
   });
