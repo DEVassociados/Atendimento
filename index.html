@@ -225,21 +225,23 @@ let mediaStorage = JSON.parse(localStorage.getItem('mediaStorage') || '{}');
 
 function saveToLocalStorage() {
   const allData = {
-    groups, // ✅ GRUPOS COM SAUDAÇÕES
+    groups,
     currentGroup,
     emojiData,
+    mediaStorage,
+    pinnedSections,
     themeMode: localStorage.getItem('themeMode') || 'auto',
-    primaryColor: localStorage.getItem('primaryColor') || '#f57c00',
-    mediaStorage, // ✅ MÍDIAS
-    pinnedSections // ✅ FIXADOS
+    primaryColor: localStorage.getItem('primaryColor') || '#f57c00'
   };
   localStorage.setItem('saudacoesData', JSON.stringify(allData));
+  localStorage.setItem("currentGroup", currentGroup);
 }
 
 
 function populateGroupSelector() {
   const selector = document.getElementById('groupSelector');
-  selector.innerHTML = '';
+  selector.innerHTML = ''; // limpa para repopular
+
   Object.keys(groups).forEach(group => {
     const opt = document.createElement('option');
     opt.value = group;
@@ -311,8 +313,14 @@ function loadFromLocalStorage() {
   const saved = localStorage.getItem('saudacoesData');
   if (saved) {
     const parsed = JSON.parse(saved);
-    groups = parsed.groups || { "Padrão": {} }; currentGroup = parsed.currentGroup || "Padrão";
+    groups = parsed.groups || { "Padrão": {} };
+    currentGroup = parsed.currentGroup || localStorage.getItem("currentGroup") || "Padrão";
     emojiData = parsed.emojiData || { "Carinhas": ["😀", "😃", "😁", "😂"] };
+    mediaStorage = parsed.mediaStorage || {};
+    pinnedSections = parsed.pinnedSections || {};
+  } else {
+    groups = { "Padrão": {} };
+    currentGroup = "Padrão";
   }
 }
 
@@ -654,13 +662,13 @@ document.addEventListener('mouseup', () => {
 
 function exportarConfiguracoes() {
   const configuracoes = {
-    tema: localStorage.getItem("themeMode") || "auto",
-    corPrimaria: localStorage.getItem("primaryColor") || "#f57c00",
-    grupos: groups, // ✅ Todos os grupos e caixas de saudação
+    grupos: groups,
     grupoAtual: currentGroup,
     emojis: emojiData,
-    midias: mediaStorage, // ✅ Mídias de cada saudação
-    fixadas: pinnedSections // ✅ Quais saudacoes estão fixadas
+    midias: mediaStorage,
+    fixadas: pinnedSections,
+    tema: localStorage.getItem("themeMode") || "auto",
+    corPrimaria: localStorage.getItem("primaryColor") || "#f57c00"
   };
 
   const blob = new Blob([JSON.stringify(configuracoes, null, 2)], { type: "application/json" });
@@ -688,7 +696,6 @@ function importarConfiguracoes() {
       try {
         const config = JSON.parse(reader.result);
 
-        // ✅ Restaurar tudo
         if (config.tema) {
           localStorage.setItem("themeMode", config.tema);
           document.getElementById("themeSelector").value = config.tema;
@@ -700,7 +707,11 @@ function importarConfiguracoes() {
         }
 
         if (config.grupos) groups = config.grupos;
-        if (config.grupoAtual) currentGroup = config.grupoAtual;
+        if (config.grupoAtual) {
+          currentGroup = config.grupoAtual;
+          localStorage.setItem("currentGroup", currentGroup);
+        }
+
         if (config.emojis) emojiData = config.emojis;
         if (config.midias) mediaStorage = config.midias;
         if (config.fixadas) pinnedSections = config.fixadas;
@@ -719,10 +730,11 @@ function importarConfiguracoes() {
 }
 
 window.onload = () => {
-  loadFromLocalStorage();
-  loadTheme();
-  render();
-  autoUpdateTheme();
+  loadFromLocalStorage();       // 1. Carrega os dados
+  populateGroupSelector();      // 2. Preenche a lista suspensa dos grupos
+  loadTheme();                  // 3. Aplica o tema
+  render();                     // 4. Renderiza as caixas
+  autoUpdateTheme();            // 5. Atualiza o tema dinamicamente (opcional)
 }
 
 function excluirSelecionadas() {
