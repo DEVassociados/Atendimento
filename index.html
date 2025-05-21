@@ -861,6 +861,23 @@ document.addEventListener('keydown', function(e) {
     alert('Seções coladas!');
   }
 });
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (selectedSections.size === 0) return;
+
+    const confirmDelete = confirm(`Deseja apagar ${selectedSections.size} saudação(ões) selecionada(s)?`);
+    if (!confirmDelete) return;
+
+    selectedSections.forEach(title => {
+      delete groups[currentGroup][title];
+    });
+    selectedSections.clear();
+    saveToLocalStorage();
+    render();
+    showToast('Seções excluídas.');
+  }
+});
+
 </script>
 </body>
 </html>
