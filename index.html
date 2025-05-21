@@ -602,8 +602,6 @@ window.addEventListener('click', function(e) {
 let isSelecting = false;
 let startX, startY;
 let selectionBox;
-let toggleMode = false;
-let affectedTitles = new Set();
 
 document.addEventListener('mousedown', e => {
   if (e.target.closest('.card')) return;
@@ -613,7 +611,6 @@ document.addEventListener('mousedown', e => {
   document.body.appendChild(selectionBox);
   startX = e.clientX;
   startY = e.clientY;
-  affectedTitles.clear();
 });
 
 document.addEventListener('mousemove', e => {
@@ -624,30 +621,12 @@ document.addEventListener('mousemove', e => {
   const h = Math.abs(e.clientY - startY);
   Object.assign(selectionBox.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
 
-  affectedTitles.clear();
   document.querySelectorAll('.card').forEach(card => {
     const rect = card.getBoundingClientRect();
     const overlap = !(rect.right < x || rect.left > x + w || rect.bottom < y || rect.top > y + h);
     const title = card.querySelector('h3')?.innerText;
-    if (overlap && title) affectedTitles.add(title);
+    if (overlap && title) selectedSections.add(title);
   });
-});
-
-document.addEventListener('mouseup', () => {
-  if (selectionBox) selectionBox.remove();
-  isSelecting = false;
-
-  if (affectedTitles.size > 0) {
-    const allAlreadySelected = [...affectedTitles].every(title => selectedSections.has(title));
-    if (allAlreadySelected) {
-      // Se já estavam todos selecionados, desmarcar
-      affectedTitles.forEach(title => selectedSections.delete(title));
-    } else {
-      // Senão, marcar
-      affectedTitles.forEach(title => selectedSections.add(title));
-    }
-  }
-
   render();
 });
 
