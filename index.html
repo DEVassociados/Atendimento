@@ -335,8 +335,9 @@ function createCard(title, messages, isPinned) {
     
     <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
     ${
-      messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
+     messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
     }
+
     <div class="actions">
       <button onclick="addMessage('${title}')">+ Caixa</button>
       <button onclick="removeMessage('${title}')">- Caixa</button>
@@ -641,55 +642,6 @@ window.addEventListener('click', function(e) {
 });
 
 
-let isSelecting = false;
-let startX, startY;
-let selectionBox;
-let affectedTitles = new Set();
-
-document.addEventListener('mousedown', e => {
-  if (e.target.closest('.card')) return;
-  isSelecting = true;
-  selectionBox = document.createElement('div');
-  selectionBox.style.cssText = 'position:fixed;border:2px dashed var(--color-primary);background:rgba(255,165,0,0.2);z-index:9999;';
-  document.body.appendChild(selectionBox);
-  startX = e.clientX;
-  startY = e.clientY;
-  affectedTitles.clear();
-});
-
-document.addEventListener('mousemove', e => {
-  if (!isSelecting) return;
-  const x = Math.min(e.clientX, startX);
-  const y = Math.min(e.clientY, startY);
-  const w = Math.abs(e.clientX - startX);
-  const h = Math.abs(e.clientY - startY);
-  Object.assign(selectionBox.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
-
-  affectedTitles.clear();
-  document.querySelectorAll('.card').forEach(card => {
-    const rect = card.getBoundingClientRect();
-    const overlap = !(rect.right < x || rect.left > x + w || rect.bottom < y || rect.top > y + h);
-    const title = card.querySelector('h3')?.innerText;
-    if (overlap && title) affectedTitles.add(title);
-  });
-});
-
-document.addEventListener('mouseup', () => {
-  if (selectionBox) selectionBox.remove();
-  isSelecting = false;
-
-  if (affectedTitles.size > 0) {
-    const allAlreadySelected = [...affectedTitles].every(title => selectedSections.has(title));
-    if (allAlreadySelected) {
-      affectedTitles.forEach(title => selectedSections.delete(title));
-    } else {
-      affectedTitles.forEach(title => selectedSections.add(title));
-    }
-  }
-
-  render();
-});
-
 
 document.addEventListener('mouseup', () => {
   if (selectionBox) selectionBox.remove();
@@ -908,13 +860,15 @@ ${options}
 let clipboardSections = [];
 
 document.addEventListener('keydown', function(e) {
+  const tag = document.activeElement.tagName;
+  if (tag === 'TEXTAREA' || tag === 'INPUT') return;
+
   if (!e.ctrlKey) return;
 
   const key = e.key.toLowerCase();
   e.preventDefault();
 
   if (key === 'a') {
-    // Ctrl+A: selecionar todas as seções
     document.querySelectorAll('.card').forEach(card => {
       const title = card.querySelector('h3')?.innerText;
       if (title) selectedSections.add(title);
@@ -923,24 +877,18 @@ document.addEventListener('keydown', function(e) {
   }
 
   if (key === 'c') {
-    // Ctrl+C: copiar seções completas
-    clipboardSections = Array.from(selectedSections).map(title => {
-      return {
-        title,
-        messages: [...groups[currentGroup][title]]
-      };
-    });
+    clipboardSections = Array.from(selectedSections).map(title => ({
+      title,
+      messages: [...groups[currentGroup][title]]
+    }));
     alert('Seções copiadas!');
   }
 
   if (key === 'x') {
-    // Ctrl+X: recortar seções (copiar e excluir)
-    clipboardSections = Array.from(selectedSections).map(title => {
-      return {
-        title,
-        messages: [...groups[currentGroup][title]]
-      };
-    });
+    clipboardSections = Array.from(selectedSections).map(title => ({
+      title,
+      messages: [...groups[currentGroup][title]]
+    }));
     selectedSections.forEach(title => {
       delete groups[currentGroup][title];
     });
