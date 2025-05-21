@@ -814,5 +814,74 @@ ${options}
     ghostClass: 'drag-ghost'
   });
 </script>
+<script>
+let clipboardSections = [];
+
+document.addEventListener('keydown', function(e) {
+  if (!e.ctrlKey) return;
+
+  const key = e.key.toLowerCase();
+  e.preventDefault();
+
+  if (key === 'a') {
+    // Ctrl+A: selecionar todas as seções
+    document.querySelectorAll('.card').forEach(card => {
+      const title = card.querySelector('h3')?.innerText;
+      if (title) selectedSections.add(title);
+    });
+    render();
+  }
+
+  if (key === 'c') {
+    // Ctrl+C: copiar seções completas
+    clipboardSections = Array.from(selectedSections).map(title => {
+      return {
+        title,
+        messages: [...groups[currentGroup][title]]
+      };
+    });
+    alert('Seções copiadas!');
+  }
+
+  if (key === 'x') {
+    // Ctrl+X: recortar seções (copiar e excluir)
+    clipboardSections = Array.from(selectedSections).map(title => {
+      return {
+        title,
+        messages: [...groups[currentGroup][title]]
+      };
+    });
+    selectedSections.forEach(title => {
+      delete groups[currentGroup][title];
+    });
+    selectedSections.clear();
+    saveToLocalStorage();
+    render();
+    alert('Seções recortadas!');
+  }
+
+  if (key === 'v') {
+    if (clipboardSections.length === 0) {
+      alert('Nada copiado ou recortado.');
+      return;
+    }
+
+    clipboardSections.forEach(({ title, messages }) => {
+      let newTitle = title;
+      let suffix = 1;
+      while (groups[currentGroup][newTitle]) {
+        const padded = String(suffix).padStart(2, '0');
+        newTitle = `${title} (${padded})`;
+        suffix++;
+      }
+      groups[currentGroup][newTitle] = [...messages];
+    });
+
+    saveToLocalStorage();
+    render();
+    alert('Seções coladas!');
+  }
+});
+</script>
 </body>
 </html>
