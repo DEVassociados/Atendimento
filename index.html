@@ -657,16 +657,19 @@ function exportarConfiguracoes() {
     grupos: groups,
     grupoAtual: currentGroup,
     emojis: emojiData,
-    midias: mediaStorage  // <-- Aqui está o armazenamento de imagens, vídeos, áudios, gifs, PDFs etc.
+    midias: mediaStorage,
+    fixadas: pinnedSections // ✅ adicionar saudacoes fixadas
   };
 
   const blob = new Blob([JSON.stringify(configuracoes, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
+
   const agora = new Date();
-const dataHora = agora.toISOString().replace(/T/, '_').replace(/:/g, '-').replace(/\..+/, '');
-a.download = `configuracoes_saudacoes_${dataHora}.json`;
+  const dataHora = agora.toISOString().replace(/T/, '_').replace(/:/g, '-').replace(/\..+/, '');
+  a.download = `configuracoes_saudacoes_${dataHora}.json`;
+
+  a.href = url;
   a.click();
 }
 
@@ -696,9 +699,8 @@ function importarConfiguracoes() {
         if (config.grupos) groups = config.grupos;
         if (config.grupoAtual) currentGroup = config.grupoAtual;
         if (config.emojis) emojiData = config.emojis;
-
-        // 🚀 Carregar as mídias, se existirem no arquivo
         if (config.midias) mediaStorage = config.midias;
+        if (config.fixadas) pinnedSections = config.fixadas;
 
         saveToLocalStorage();
         render();
