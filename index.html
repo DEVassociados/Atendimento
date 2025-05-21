@@ -240,8 +240,7 @@ function saveToLocalStorage() {
 
 function populateGroupSelector() {
   const selector = document.getElementById('groupSelector');
-  selector.innerHTML = ''; // limpa para repopular
-
+  selector.innerHTML = '';
   Object.keys(groups).forEach(group => {
     const opt = document.createElement('option');
     opt.value = group;
@@ -331,7 +330,7 @@ function createCard(title, messages, isPinned) {
 	
     <h3>${title}</h3>
 
-    <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
+    
     <div class="media-upload" onclick="triggerFileInput('${title}')" ondragover="event.preventDefault()" ondrop="handleMediaDrop(event, '${title}')">
       <strong>📁 Envie arquivos ou arraste aqui</strong>
       <input type="file" accept="image/*,video/*,audio/*,application/pdf" multiple style="display:none" id="input-${title}" onchange="handleMediaUpload(event, '${title}')">
@@ -343,7 +342,7 @@ function createCard(title, messages, isPinned) {
 
    
     
-    <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
+    <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button> <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
     ${
      messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
     }
