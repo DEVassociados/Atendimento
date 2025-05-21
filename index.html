@@ -8,6 +8,33 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
 <style>
+.media-upload {
+  border: 2px dashed var(--color-primary);
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s ease;
+}
+.media-upload:hover {
+  background: rgba(245, 124, 0, 0.1);
+}
+.media-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.media-preview > * {
+  max-width: 100%;
+  border-radius: 8px;
+}
+.media-preview video, .media-preview audio {
+  max-width: 100%;
+}
+
 .drag-ghost {
   opacity: 0.4;
   background: #f0f0f0;
@@ -118,22 +145,23 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
 }
 .card .pin-toggle {
   position: absolute;
-  top: 10px;
-  right: 14px;
+  top: 25px;
+  right: 12px;
   background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 4px 4px;
+  padding: 8px 10px;
   font-size: 12px;
   cursor: pointer;
 }
 .card .select-toggle {
   position: absolute;
-  top: 41px;
-  left: 267px;
-  transform: scale(1.6);
+  top: 39px;
+  left: 225px;
+  transform: scale(2);
 }
+
 </style>
 </head>
 <body>
@@ -193,6 +221,7 @@ let groups = {
 };
 let currentGroup = "Padrão";
 let currentTextId = null;
+let mediaStorage = JSON.parse(localStorage.getItem('mediaStorage') || '{}');
 
 function saveToLocalStorage() {
   const allData = {
@@ -289,8 +318,21 @@ function createCard(title, messages, isPinned) {
   const card = document.createElement('div');
   card.className = 'card' + (isPinned ? ' pinned' : '');
   card.innerHTML = `
-    <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
+	
     <h3>${title}</h3>
+
+    <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
+    <div class="media-upload" onclick="triggerFileInput('${title}')" ondragover="event.preventDefault()" ondrop="handleMediaDrop(event, '${title}')">
+      <strong>📁 Envie arquivos ou arraste aqui</strong>
+      <input type="file" accept="image/*,video/*,audio/*,application/pdf" multiple style="display:none" id="input-${title}" onchange="handleMediaUpload(event, '${title}')">
+    </div>
+    <div class="media-preview" id="preview-${title}">${generateMediaPreview(title)}</div>
+    
+   
+    <div class="actions">
+
+   
+    
     <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
     ${
       messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
@@ -372,7 +414,7 @@ function setActiveTextId(id) { currentTextId = id; }
 function updateMessage(section, i, val) { groups[currentGroup][section][i] = val; saveToLocalStorage(); }
 function addMessage(section) { groups[currentGroup][section].push('Nova saudação...'); saveToLocalStorage(); render(); }
 function removeMessage(section) { if (groups[currentGroup][section].length > 1) { groups[currentGroup][section].pop(); saveToLocalStorage(); render(); } }
-function removeSection(section) { delete groups[currentGroup][section]; saveToLocalStorage(); render(); }
+function removeSection(section) { delete groups[currentGroup][section]; delete mediaStorage[section]; localStorage.setItem('mediaStorage', JSON.stringify(mediaStorage)); saveToLocalStorage(); render(); }
 function addSection() {
   const name = document.getElementById('newSection').value.trim();
   if (name && !groups[currentGroup][name]) {
@@ -602,7 +644,6 @@ window.addEventListener('click', function(e) {
 let isSelecting = false;
 let startX, startY;
 let selectionBox;
-let toggleMode = false;
 let affectedTitles = new Set();
 
 document.addEventListener('mousedown', e => {
@@ -640,16 +681,15 @@ document.addEventListener('mouseup', () => {
   if (affectedTitles.size > 0) {
     const allAlreadySelected = [...affectedTitles].every(title => selectedSections.has(title));
     if (allAlreadySelected) {
-      // Se já estavam todos selecionados, desmarcar
       affectedTitles.forEach(title => selectedSections.delete(title));
     } else {
-      // Senão, marcar
       affectedTitles.forEach(title => selectedSections.add(title));
     }
   }
 
   render();
 });
+
 
 document.addEventListener('mouseup', () => {
   if (selectionBox) selectionBox.remove();
@@ -737,6 +777,56 @@ function renameSection(oldName) {
   }
 }
 
+
+function triggerFileInput(section) {
+  document.getElementById(`input-${section}`).click();
+}
+
+function handleMediaUpload(e, section) {
+  const files = Array.from(e.target.files);
+  processMediaFiles(files, section);
+}
+
+function handleMediaDrop(e, section) {
+  e.preventDefault();
+  const files = Array.from(e.dataTransfer.files);
+  processMediaFiles(files, section);
+}
+
+function processMediaFiles(files, section) {
+  mediaStorage[section] ||= [];
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      mediaStorage[section].push({
+        name: file.name,
+        type: file.type,
+        data: reader.result
+      });
+      localStorage.setItem('mediaStorage', JSON.stringify(mediaStorage));
+      render();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function generateMediaPreview(section) {
+  const items = mediaStorage[section] || [];
+  return items.map(item => {
+    if (item.type.startsWith('image/')) {
+      return `<img src="${item.data}" style="max-height:120px;">`;
+    } else if (item.type.startsWith('video/')) {
+      return `<video controls src="${item.data}" style="max-height:160px;"></video>`;
+    } else if (item.type.startsWith('audio/')) {
+      return `<audio controls src="${item.data}"></audio>`;
+    } else if (item.type === 'application/pdf') {
+      return `<embed src="${item.data}" type="application/pdf" width="100%" height="200px">`;
+    } else {
+      return `<div>Arquivo: ${item.name}</div>`;
+    }
+  }).join('');
+}
 </script>
 <!-- SortableJS CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js">
@@ -898,7 +988,6 @@ document.addEventListener('keydown', function(e) {
     alert('Seções excluídas.');
   }
 });
-
 </script>
 </body>
 </html>
