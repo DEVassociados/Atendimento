@@ -285,33 +285,64 @@ function loadFromLocalStorage() {
   }
 }
 
+function createCard(title, messages, isPinned) {
+  const card = document.createElement('div');
+  card.className = 'card' + (isPinned ? ' pinned' : '');
+  card.innerHTML = `
+    <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
+    <h3>${title}</h3>
+    <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
+    ${
+      messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
+    }
+    <div class="actions">
+      <button onclick="addMessage('${title}')">+ Caixa</button>
+      <button onclick="removeMessage('${title}')">- Caixa</button>
+      <button onclick="wrapText(currentTextId, '*')">Negrito</button>
+      <button onclick="wrapText(currentTextId, '_')">Itálico</button>
+      <button onclick="copySelectedText()">Copiar</button>
+      <button onclick="renameSection('${title}')">Renomear</button>
+      <div class="emoji-dropdown">
+        <button onclick="toggleEmojiMenu(this)">😊 Emojis</button>
+        <div class="emoji-menu">
+          <input type="text" placeholder="Buscar emoji..." oninput="filterEmojis(this)" style="width: 100%; padding: 5px; margin-bottom: 10px;">
+          ${generateEmojiMenu()}
+        </div>
+      </div>
+      <button onclick="removeSection('${title}')">Excluir</button>
+    </div>
+  `;
+  return card;
+}
+
 function render() {
   const grid = document.getElementById('sections');
   grid.innerHTML = '';
-  Object.entries(groups[currentGroup] || {}).forEach(([title, messages]) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `<input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
-<h3>${title}</h3>
-      <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
-` +
-      messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('') +
-      `<div class="actions">
-        <button onclick="addMessage('${title}')">+ Caixa</button>
-        <button onclick="removeMessage('${title}')">- Caixa</button>
-        <button onclick="wrapText(currentTextId, '*')">Negrito</button>
-        <button onclick="wrapText(currentTextId, '_')">Itálico</button>
-        <button onclick="copySelectedText()">Copiar</button>
-        <button onclick="renameSection('${title}')">Renomear</button>
-        <div class="emoji-dropdown">
-          <button onclick="toggleEmojiMenu(this)">😊 Emojis</button>
-          <div class="emoji-menu">
-            <input type="text" placeholder="Buscar emoji..." oninput="filterEmojis(this)" style="width: 100%; padding: 5px; margin-bottom: 10px;">
-            ${generateEmojiMenu()}
-          </div>
-        </div>
-        <button onclick="removeSection('${title}')">Excluir</button>
-      </div>`;
+
+  const groupData = groups[currentGroup] || {};
+  const entries = Object.entries(groupData);
+
+  const pinned = entries.filter(([title]) => pinnedSections[title]);
+  const unpinned = entries.filter(([title]) => !pinnedSections[title]);
+
+  pinned.forEach(([title, messages]) => {
+    const card = createCard(title, messages, true);
+    grid.appendChild(card);
+  });
+
+  if (pinned.length > 0 && unpinned.length > 0) {
+    const separator = document.createElement('div');
+    separator.style.cssText = `
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--color-primary), var(--color-primary) 10px, transparent 10px, transparent 20px);
+      margin: 10px 0;
+      grid-column: 1 / -1;
+    `;
+    grid.appendChild(separator);
+  }
+
+  unpinned.forEach(([title, messages]) => {
+    const card = createCard(title, messages, false);
     grid.appendChild(card);
   });
 }
