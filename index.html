@@ -162,6 +162,30 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
   transform: scale(2);
 }
 
+
+.text-editable-area {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  resize: vertical;
+  border: 1px solid #ccc;
+  pointer-events: auto;
+  user-select: text;
+  position: relative;
+  z-index: 1;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+
+.card-header {
+  cursor: grab;
+  user-select: none;
+  padding: 5px 0;
+  font-weight: 600;
+}
+
 </style>
 </head>
 <body>
@@ -328,7 +352,7 @@ function createCard(title, messages, isPinned) {
   card.className = 'card' + (isPinned ? ' pinned' : '');
   card.innerHTML = `
 	
-    <h3>${title}</h3>
+    <div class="card-header"><h3>${title}</h3></div>
 
     
     <div class="media-upload" onclick="triggerFileInput('${title}')" ondragover="event.preventDefault()" ondrop="handleMediaDrop(event, '${title}')">
@@ -344,7 +368,7 @@ function createCard(title, messages, isPinned) {
     
     <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button> <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
     ${
-     messages.map((msg, i) => `<textarea id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
+     messages.map((msg, i) => `<textarea class="text-editable-area" id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
     }
 
     <div class="actions">
@@ -435,27 +459,13 @@ function addSection() {
     render();
   }
 }
-function exportData() {
-  const fullData = {
-    saudacoes: data,
-    emojiData,
-    themeMode: localStorage.getItem('themeMode') || 'auto',
-    primaryColor: localStorage.getItem('primaryColor') || '#f57c00'
-  };
-  const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'saudacoes.json';
-  a.click();
-}
 function importData() { document.getElementById('fileInput').click(); }
 function handleFile(e) {
   const file = e.target.files[0];
   const reader = new FileReader();
   reader.onload = () => {
     const imported = JSON.parse(reader.result);
-    data = imported.saudacoes || {};
+    
     emojiData = imported.emojiData || { "Carinhas": ["😀", "😃", "😁", "😂"] };
     if (imported.primaryColor) { changePrimaryColor(imported.primaryColor); }
     if (imported.themeMode) {
@@ -806,8 +816,12 @@ function generateMediaPreview(section) {
     const downloadButton = `<button onclick="downloadMedia('${item.data}', '${item.name}')" title="Baixar">⬇️</button>`;
     const copyButton = isImage ? `<button onclick="copyMediaToClipboard('${item.data}', '${item.type}')" title="Copiar imagem">📋</button>` : '';
     const deleteButton = `<button onclick="deleteMedia('${section}', ${index})" title="Excluir">❌</button>`;
-    const zoomButton = (isImage || isVideo) ? `<button onclick="showMediaPopup('${item.data}', '${item.type}')" title="Ampliar">🔍</button>` :
-                        (isPDF ? `<button onclick="window.open('${item.data}', '_blank')" title="Abrir PDF">🔍</button>` : '');
+    let zoomButton = '';
+if (isImage || isVideo) {
+  zoomButton = `<button `;
+} else if (isPDF || isAudio) {
+  zoomButton = `<button onclick="window.open('${item.data}', '_blank')" title="Abrir em nova aba">🔍</button>`;
+}
 
     let mediaTag = '';
     if (isImage) {
@@ -867,18 +881,29 @@ async function copyMediaToClipboard(dataUrl, type) {
   }
 }
 
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
 </script>
 <!-- SortableJS CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js">
 new Sortable(document.getElementById('sections'), {
-    filter: '.pinned',
-    onMove: evt => !evt.related.classList.contains('pinned'),
+  handle: '.card-header',
   animation: 150,
   ghostClass: 'drag-ghost',
+  filter: '.pinned',
+  onMove: evt => !evt.related.classList.contains('pinned'),
   onMove: evt => {
     return !evt.related.classList.contains('pinned');
   }
 });
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
 </script>
 <script>
 let pinnedSections = JSON.parse(localStorage.getItem('pinnedSections') || '{}');
@@ -938,11 +963,17 @@ ${options}
 
   // Inicializa a funcionalidade de arrastar nas caixas
   new Sortable(document.getElementById('sections'), {
-    filter: '.pinned',
-    onMove: evt => !evt.related.classList.contains('pinned'),
-    animation: 150,
-    ghostClass: 'drag-ghost'
+  handle: '.card-header',
+  animation: 150,
+  ghostClass: 'drag-ghost',
+  filter: '.pinned',
+  onMove: evt => !evt.related.classList.contains('pinned')
   });
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
 </script>
 <script>
 let clipboardSections = [];
@@ -1024,88 +1055,22 @@ document.addEventListener('keydown', function(e) {
     alert('Seções excluídas.');
   }
 });
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
 </script>
-<div id="mediaPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:2000;" onclick="this.style.display='none'">
-  <div style="max-width:90%; max-height:90%;">
-    <img id="popupImage" style="max-width:100%; max-height:100%; display:none;" />
-    <video id="popupVideo" controls style="max-width:100%; max-height:100%; display:none;" />
-  </div>
-</div>
 
-<script>
-function showMediaPopup(src, type) {
-  const popup = document.getElementById('mediaPopup');
-  const img = document.getElementById('popupImage');
-  const video = document.getElementById('popupVideo');
-  img.style.display = 'none';
-  video.style.display = 'none';
-
-  if (type.startsWith('image/')) {
-    img.src = src;
-    img.style.display = 'block';
-  } else if (type.startsWith('video/')) {
-    video.src = src;
-    video.style.display = 'block';
-  }
-
-  popup.style.display = 'flex';
-}
-</script>
 `
 <!-- POPUP DE VISUALIZAÇÃO -->
-<div id="mediaPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; z-index:9999;">
-  <div style="position:relative; max-width:90vw; max-height:90vh; width:auto; height:auto; background:#000; padding:10px; border-radius:10px;">
-    <button onclick="closeMediaPopup()" style="position:absolute; top:8px; right:12px; font-size:20px; background:red; color:white; border:none; border-radius:6px; padding:4px 10px; cursor:pointer;">✖</button>
-    <img id="popupImage" style="max-width:100%; max-height:80vh; display:none;" />
-    <video id="popupVideo" controls style="max-width:100%; max-height:80vh; display:none;"></video>
-    <embed id="popupPDF" type="application/pdf" style="width:90vw; height:80vh; display:none;" />
-  </div>
-</div>
 
-<script>
-<!-- POPUP DE VISUALIZAÇÃO PARA IMAGENS E VÍDEOS -->
-<div id="mediaPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; z-index:9999;">
-  <div style="position:relative; max-width:90vw; max-height:90vh; background:#000; padding:10px; border-radius:10px;">
-    <button onclick="closeMediaPopup()" style="position:absolute; top:8px; right:12px; font-size:20px; background:red; color:white; border:none; border-radius:6px; padding:4px 10px; cursor:pointer;">✖</button>
-    <img id="popupImage" style="max-width:100%; max-height:80vh; display:none;" />
-    <video id="popupVideo" controls style="max-width:100%; max-height:80vh; display:none;"></video>
-  </div>
-</div>
-
-<script>
-function showMediaPopup(src, type) {
-  const popup = document.getElementById('mediaPopup');
-  const img = document.getElementById('popupImage');
-  const video = document.getElementById('popupVideo');
-  img.style.display = 'none';
-  video.style.display = 'none';
-
-  if (type.startsWith('image/')) {
-    img.src = src;
-    img.style.display = 'block';
-  } else if (type.startsWith('video/')) {
-    video.src = src;
-    video.style.display = 'block';
-  }
-
-  popup.style.display = 'flex';
-}
-
-function closeMediaPopup() {
-  const popup = document.getElementById('mediaPopup');
-  const img = document.getElementById('popupImage');
-  const video = document.getElementById('popupVideo');
-  popup.style.display = 'none';
-  img.src = '';
-  video.src = '';
-}
-</script>
 
 <!-- Modal Base64 -->
 <div id="dialogoBase64" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:10000;">
   <div style="background:var(--color-background); color:var(--color-text); padding:20px; border-radius:10px; max-width:500px; width:90%; position:relative;">
     <h3>Importar mídia via Base64</h3>
-    <textarea id="base64Input" placeholder="Cole o código base64 aqui..." style="width:100%; height:150px; margin-bottom:10px;"></textarea>
+    <textarea class="text-editable-area" id="base64Input" placeholder="Cole o código base64 aqui..." style="width:100%; height:150px; margin-bottom:10px;"></textarea>
     <div style="display:flex; justify-content: flex-end; gap: 10px;">
       <button onclick="confirmarImportacaoBase64()">Confirmar</button>
       <button onclick="fecharDialogoBase64()">Cancelar</button>
@@ -1145,6 +1110,11 @@ function confirmarImportacaoBase64() {
   fecharDialogoBase64();
   render();
 }
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
 </script>
 
 </body>
