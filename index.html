@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="utf-8"/>
+<link href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FtYWRhXzIiIGRhdGEtbmFtZT0iQ2FtYWRhIDIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU0Mi45MyA0MDUuNzYiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICNlNjUzMDA7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogI2ZmNjcxZDsKICAgICAgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPGcgaWQ9IkNhbWFkYV8xLTIiIGRhdGEtbmFtZT0iQ2FtYWRhIDEiPgogICAgPGc+CiAgICAgIDxjaXJjbGUgY2xhc3M9ImNscy0yIiBjeD0iMzEyLjA0IiBjeT0iODMuMzIiIHI9IjcxLjY4Ii8+CiAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iODkuMzciIHk9IjEyOS40NSIgd2lkdGg9Ijc4LjkyIiBoZWlnaHQ9IjI4NS40NyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjMwLjIgLTExLjM4KSByb3RhdGUoNDUpIi8+CiAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iLTEwLjciIHk9Ijg3LjY0IiB3aWR0aD0iMjgxLjI5IiBoZWlnaHQ9IjgwLjY4IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMjguNTUgLTU0LjQpIHJvdGF0ZSg0NSkiLz4KICAgICAgPHJlY3QgY2xhc3M9ImNscy0yIiB4PSIyMDcuMTIiIHk9IjI2NS44IiB3aWR0aD0iMjAxLjcxIiBoZWlnaHQ9IjgwLjQyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDYuNTggLTEyOC4xNCkgcm90YXRlKDQ1KSIvPgogICAgICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjM3OS4xNCIgeT0iMTQ1Ljg0IiB3aWR0aD0iNzkuMzgiIGhlaWdodD0iMjcxLjYyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMjEuODMgLTIxMy42Nykgcm90YXRlKDQ1KSIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+" rel="icon" type="image/svg+xml"/>
+<title>DEV.associados</title>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>	
+.pin-select-group {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pin-select-group .pin-toggle {
+  position: static; /* Remove o absolute interno */
+  transform: scale(0.7);
+  margin-right: : 10px;
+  margin: 10;
+}
+
+.pin-select-group .select-toggle {
+  transform: scale(2.0);
+  margin-left: 5px;
+  margin: 5px;
+}	
+.media-upload {
+  border: 2px dashed var(--color-primary);
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s ease;
+}
+.media-upload:hover {
+  background: rgba(245, 124, 0, 0.1);
+}
+.media-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.media-preview > * {
+  max-width: 100%;
+  border-radius: 8px;
+}
+.media-preview video, .media-preview audio {
+  max-width: 100%;
+}
+.drag-ghost {
+  opacity: 0.4;
+  background: #f0f0f0;
+}
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+}
+:root {
+  --color-primary: #f57c00;
+  --color-background: #ffffff;
+  --color-text: #000000;
+}
+* { box-sizing: border-box;  padding: 0; }
+html, body { font-family: 'Inter', sans-serif; font-size: 14px; }
+header { background: var(--color-primary); padding: 20px; color: white; text-align: center; }
+.container { max-width: 1000px; margin: auto; padding: 20px; }
+.controls, .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+.controls input[type="text"], .controls button, .controls label, .actions button {
+  background: var(--color-primary);
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  height: 38px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.controls select {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 8px;
+  height: 38px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.controls label { display: flex; align-items: center; gap: 5px; }
+.controls input[type="color"] {
+  width: 30px; height: 30px; padding: 0; background: var(--color-primary); border: none; border-radius: 8px; cursor: pointer;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.card { padding: 15px; border: 1px solid; border-radius: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; }
+textarea { width: 100%; padding: 8px; border-radius: 10px; margin-bottom: 10px; resize: vertical; border: 1px solid #ccc; font-size: 14px; }
+.emoji-dropdown { position: relative; display: inline-block; }
+.emoji-menu {
+  display: none;
+  position: absolute;
+  background: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 240px;
+  padding: 10px;
+  top: 50px;
+  left: 0;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  max-height: 300px;
+  overflow-y: auto;
+}
+.emoji-menu.show { display: block; opacity: 1; transform: translateY(0); }
+.emoji-category { margin-bottom: 10px; }
+.emoji-category-title { font-weight: bold; margin-bottom: 5px; font-size: 14px; color: var(--color-primary); }
+.emoji-item { font-size: 18px; cursor: pointer; padding: 4px; display: inline-block; }
+.emoji-item:hover { background: #eee; border-radius: 4px; }
+body.light-mode { background: #fff; color: #000; }
+body.light-mode .card { background: #fff; border-color: #ddd; }
+body.dark-mode {
+  background: #121212;
+  color: #eee;
+  --color-background: #1e1e1e;
+  --color-text: #eeeeee;
+}
+body.dark-mode .card { background: #1e1e1e; border-color: #333; }
+.emoji-button {
+  background: var(--color-primary);
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  height: 38px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-right: 8px;
+}
+
+.text-editable-area {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  resize: vertical;
+  border: 1px solid #ccc;
+  pointer-events: auto;
+  user-select: text;
+  position: relative;
+  z-index: 1;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+.card-header {
+  cursor: grab;
+  user-select: none;
+  padding: 5px 0;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+<header>
+<a href="https://idolink.com.br/devassociados" style="text-decoration: none; color: inherit;" target="_blank">
+<h1 style="font-size: 41px;line-height: 0;font-style: normal;">DEV.associados</h1>
+<h4 style="line-height: 0;letter-spacing: 0.161em;font-size: 13.5px;">sua agência de marketing integrado</h4>
+</a>
+</header>
+<div class="container">
+<div class="controls">
+<input id="searchBox" oninput="filterSections()" placeholder="Buscar..." type="text"/>
+<input id="newSection" placeholder="Nova saudação..." type="text"/>
+<button onclick="addSection()">Adicionar</button>
+<button onclick="openEmojiManager()">Gerenciar Emojis</button>
+<label>Cor<input onchange="changePrimaryColor(this.value)" type="color"/></label>
+<label>
+<select id="themeSelector" onchange="changeTheme(this.value)">
+<option value="auto">🌗</option>
+<option value="light">☀️</option>
+<option value="dark">🌑</option>
+</select>
+</label>
+<button onclick="exportarConfiguracoes()">⬇️ Exportar Configurações</button>
+<button onclick="importarConfiguracoes()">⬆️ Importar Configurações</button>
+<button onclick="saveToLocalStorage(); showToast('Configurações salvas!')">💾 Salvar Configurações</button>
+
+<button onclick="resetConfig()">Redefinir</button>
+<input id="fileInput" onchange="handleFile(event)" style="display:none" type="file"/>
+<select id="groupSelector" onchange="changeGroup(this.value)"></select>
+<button onclick="createGroup()">+ Grupo</button>
+<button onclick="renameGroup()">Renomear Grupo</button>
+<button onclick="deleteGroup()">Excluir Grupo</button>
+<button onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
+<button onclick="moveSelectedSections()">Mover selecionados</button></div>
+<div class="grid" id="sections"></div>
+</div>
+<div id="emojiManagerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
+<div style="background:var(--color-background); color:var(--color-text); padding:20px; border-radius:16px; max-width:500px; width:90%; max-height:90%; overflow-y:auto; position:relative;">
+<h2>Gerenciar Emojis</h2>
+<div id="emojiCategories"></div>
+<button class="emoji-button" onclick="addEmojiCategory()">+ Nova Categoria</button>
+<br/><br/>
+<button class="emoji-button" onclick="closeEmojiManager()">Fechar</button>
+</div>
+</div>
+<script>
+let emojiData = {
+  "Carinhas": ["😀", "😃", "😁", "😂"]
+};
+let groups = {
+  "Padrão": {
+    "Bom dia": ["Olá, bom dia! ☀️"],
+    "Boa tarde": ["Olá, boa tarde! ⛅️"],
+    "Boa noite": ["Olá, boa noite! 🌙"]
+  }
+};
+let currentGroup = "Padrão";
+let currentTextId = null;
+let mediaStorage = JSON.parse(localStorage.getItem('mediaStorage') || '{}');
+
+function saveToLocalStorage() {
+  const allData = {
+    groups,
+    currentGroup,
+    emojiData,
+    mediaStorage,
+    pinnedSections,
+    themeMode: localStorage.getItem('themeMode') || 'auto',
+    primaryColor: localStorage.getItem('primaryColor') || '#f57c00'
+  };
+  localStorage.setItem('saudacoesData', JSON.stringify(allData));
+  localStorage.setItem("currentGroup", currentGroup);
+}
+
+
+function populateGroupSelector() {
+  const selector = document.getElementById('groupSelector');
+  selector.innerHTML = '';
+  Object.keys(groups).forEach(group => {
+    const opt = document.createElement('option');
+    opt.value = group;
+    opt.textContent = group;
+    if (group === currentGroup) opt.selected = true;
+    selector.appendChild(opt);
+  });
+}
+
+function changeGroup(group) {
+  currentGroup = group;
+  saveToLocalStorage();
+  populateGroupSelector(); render();
+}
+
+function createGroup() {
+  const name = prompt("Nome do novo grupo:");
+  if (name && !groups[name]) {
+    groups[name] = {};
+    currentGroup = name;
+    saveToLocalStorage();
+    populateGroupSelector();
+    render();
+  }
+}
+
+function renameGroup() {
+  const newName = prompt("Novo nome para o grupo:", currentGroup);
+  if (newName && newName !== currentGroup) {
+    if (groups[newName]) {
+      alert("Já existe um grupo com esse nome!");
+      return;
+    }
+    groups[newName] = groups[currentGroup];
+    delete groups[currentGroup];
+    currentGroup = newName;
+    saveToLocalStorage();
+    populateGroupSelector();
+    render();
+  }
+}
+
+function deleteGroup() {
+  const options = [
+    "Cancelar",
+    "Excluir apenas o grupo (manter saudações)",
+    "Excluir grupo e todas as saudações"
+  ];
+  const choice = prompt(`Deseja excluir o grupo "${currentGroup}"?\n0 - ${options[0]}\n1 - ${options[1]}\n2 - ${options[2]}`);
+
+  if (choice === "1") {
+    const copy = groups[currentGroup];
+    delete groups[currentGroup];
+    Object.assign(groups["Padrão"] ||= {}, copy);
+  } else if (choice === "2") {
+    delete groups[currentGroup];
+  } else {
+    return;
+  }
+
+  currentGroup = Object.keys(groups)[0] || "Padrão";
+  saveToLocalStorage();
+  populateGroupSelector();
+  render();
+}
+
+
+function loadFromLocalStorage() {
+  const saved = localStorage.getItem('saudacoesData');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    groups = parsed.groups || { "Padrão": {} };
+    currentGroup = parsed.currentGroup || localStorage.getItem("currentGroup") || "Padrão";
+    emojiData = parsed.emojiData || { "Carinhas": ["😀", "😃", "😁", "😂"] };
+    mediaStorage = parsed.mediaStorage || {};
+    pinnedSections = parsed.pinnedSections || {};
+  } else {
+    groups = { "Padrão": {} };
+    currentGroup = "Padrão";
+  }
+}
+
+function createCard(title, messages, isPinned) {
+  const card = document.createElement('div');
+  card.className = 'card' + (isPinned ? ' pinned' : '');
+  card.innerHTML = `
+	
+    <div class="card-header"><h3>${title}</h3></div>
+
+    
+         <input type="file" accept="image/*,video/*,audio/*,application/pdf" multiple style="display:none" id="input-${title}" onchange="handleMediaUpload(event, '${title}')">
+    </div>
+    <div class="media-preview" id="preview-${title}">${generateMediaPreview(title)}</div>
+    
+   	
+    <div class="actions">
+
+   
+    
+    <div class="pin-select-group">
+  <button class="pin-toggle" onclick="togglePin('${title}')">${pinnedSections[title] ? "📌" : "📍"}</button>
+  <input type="checkbox" class="select-toggle" onchange="toggleSectionSelection('${title}')" ${selectedSections.has(title) ? 'checked' : ''}/>
+</div>
+
+    ${
+     messages.map((msg, i) => `<textarea class="text-editable-area" id="${title}-${i}" onfocus="setActiveTextId('${title}-${i}')" oninput="updateMessage('${title}', ${i}, this.value)">${msg}</textarea>`).join('')
+    }
+
+    <div class="actions">
+      <button onclick="addMessage('${title}')">+ Caixa</button>
+      <button onclick="removeMessage('${title}')">- Caixa</button>
+      <button onclick="wrapText(currentTextId, '*')">Negrito</button>
+      <button onclick="wrapText(currentTextId, '_')">Itálico</button>
+      <button onclick="copySelectedText()">Copiar</button>
+      <button onclick="renameSection('${title}')">Renomear</button>
+<button onclick="addMediaUrl('${title}')">📎 Importar via URL</button>
+<button onclick="addMediaFromPath('${title}')">📂 Caminho local</button>
+      <div class="emoji-dropdown">
+        <button onclick="toggleEmojiMenu(this)">😊 Emojis</button>
+        <div class="emoji-menu">
+          <input type="text" placeholder="Buscar emoji..." oninput="filterEmojis(this)" style="width: 100%; padding: 5px; margin-bottom: 10px;">
+          ${generateEmojiMenu()}
+        </div>
+      </div>
+      <button onclick="removeSection('${title}')">Excluir</button>
+    </div>
+  `;
+  return card;
+}
+
+function render() {
+  const grid = document.getElementById('sections');
+  grid.innerHTML = '';
+
+  const groupData = groups[currentGroup] || {};
+  const entries = Object.entries(groupData);
+
+  const pinned = entries.filter(([title]) => pinnedSections[title]);
+  const unpinned = entries.filter(([title]) => !pinnedSections[title]);
+
+  pinned.forEach(([title, messages]) => {
+    const card = createCard(title, messages, true);
+    grid.appendChild(card);
+  });
+
+  if (pinned.length > 0 && unpinned.length > 0) {
+    const separator = document.createElement('div');
+    separator.style.cssText = `
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--color-primary), var(--color-primary) 10px, transparent 10px, transparent 20px);
+      margin: 10px 0;
+      grid-column: 1 / -1;
+    `;
+    grid.appendChild(separator);
+  }
+
+  unpinned.forEach(([title, messages]) => {
+    const card = createCard(title, messages, false);
+    grid.appendChild(card);
+  });
+}
+
+function generateEmojiMenu() {
+  let html = '';
+  Object.entries(emojiData).forEach(([cat, emojis]) => {
+    html += `<div class='emoji-category'><div class='emoji-category-title'>${cat}</div>`;
+    emojis.forEach(e => {
+      html += `<span class='emoji-item' onclick='insertEmoji("${e}")'>${e}</span>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+function refreshAllEmojiMenus() {
+  document.querySelectorAll('.emoji-menu').forEach(menu => {
+    const search = menu.querySelector('input');
+    menu.innerHTML = '';
+    if (search) menu.appendChild(search);
+    menu.innerHTML += generateEmojiMenu();
+  });
+}
+
+function setActiveTextId(id) { currentTextId = id; }
+function updateMessage(section, i, val) { groups[currentGroup][section][i] = val; saveToLocalStorage(); }
+function addMessage(section) { groups[currentGroup][section].push('Nova saudação...'); saveToLocalStorage(); render(); }
+function removeMessage(section) { if (groups[currentGroup][section].length > 1) { groups[currentGroup][section].pop(); saveToLocalStorage(); render(); } }
+function removeSection(section) { delete groups[currentGroup][section]; delete mediaStorage[section]; localStorage.setItem('mediaStorage', JSON.stringify(mediaStorage)); saveToLocalStorage(); render(); }
+function addSection() {
+  const name = document.getElementById('newSection').value.trim();
+  if (name && !groups[currentGroup][name]) {
+    groups[currentGroup][name] = ['Nova saudação...'];
+    document.getElementById('newSection').value = '';
+    saveToLocalStorage();
+    render();
+  }
+}
+function importData() { document.getElementById('fileInput').click(); }
+function handleFile(e) {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    const imported = JSON.parse(reader.result);
+    
+    emojiData = imported.emojiData || { "Carinhas": ["😀", "😃", "😁", "😂"] };
+    if (imported.primaryColor) { changePrimaryColor(imported.primaryColor); }
+    if (imported.themeMode) {
+      localStorage.setItem('themeMode', imported.themeMode);
+      document.getElementById('themeSelector').value = imported.themeMode;
+      applyTheme(imported.themeMode);
+    }
+    saveToLocalStorage();
+    render();
+  };
+  reader.readAsText(file);
+}
+
+function openEmojiManager() {
+  renderEmojiManager();
+  document.getElementById('emojiManagerModal').style.display = 'flex';
+}
+function closeEmojiManager() {
+  document.getElementById('emojiManagerModal').style.display = 'none';
+}
+
+function renderEmojiManager() {
+  const container = document.getElementById('emojiCategories');
+  container.innerHTML = '';
+  Object.entries(emojiData).forEach(([category, emojis]) => {
+    const div = document.createElement('div');
+    div.style.marginBottom = '20px';
+    div.innerHTML = `
+      <input type="text" value="${category}" onchange="renameEmojiCategory('${category}', this.value)" style="margin-bottom:5px; padding:5px; width:80%;">
+      <div>${emojis.map((e, i) => `<span style="font-size:24px; cursor:pointer; margin:5px;" onclick="removeEmoji('${category}', ${i})">${e}</span>`).join('')}</div>
+      <input type="text" placeholder="Novo emoji..." id="newEmoji-${category}" style="margin-top:5px; padding:5px; width:70%;">
+      <button class="emoji-button" onclick="addEmoji('${category}')">Adicionar Emoji</button>
+      <button class="emoji-button" onclick="deleteEmojiCategory('${category}')">Excluir Categoria</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addEmojiCategory() {
+  const name = prompt("Nome da nova categoria:");
+  if (name && !emojiData[name]) {
+    emojiData[name] = [];
+    renderEmojiManager();
+    refreshAllEmojiMenus();
+    saveToLocalStorage();
+  }
+}
+
+function renameEmojiCategory(oldName, newName) {
+  if (oldName !== newName && newName) {
+    emojiData[newName] = emojiData[oldName];
+    delete emojiData[oldName];
+    renderEmojiManager();
+    refreshAllEmojiMenus();
+    saveToLocalStorage();
+  }
+}
+
+function deleteEmojiCategory(category) {
+  if (confirm(`Excluir a categoria "${category}"?`)) {
+    delete emojiData[category];
+    renderEmojiManager();
+    refreshAllEmojiMenus();
+    saveToLocalStorage();
+  }
+}
+
+function addEmoji(category) {
+  const input = document.getElementById(`newEmoji-${category}`);
+  const emoji = input.value.trim();
+  if (emoji) {
+    emojiData[category].push(emoji);
+    input.value = '';
+    renderEmojiManager();
+    refreshAllEmojiMenus();
+    saveToLocalStorage();
+  }
+}
+
+function removeEmoji(category, index) {
+  emojiData[category].splice(index, 1);
+  renderEmojiManager();
+  refreshAllEmojiMenus();
+  saveToLocalStorage();
+}
+
+function wrapText(id, wrapper) {
+  if (!id) return;
+  const el = document.getElementById(id);
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+  const selected = el.value.substring(start, end);
+  el.setRangeText(wrapper + selected + wrapper);
+  el.focus();
+  el.setSelectionRange(start + wrapper.length, end + wrapper.length);
+  updateDataFromElement(el);
+}
+
+function updateDataFromElement(el) {
+  const [section, index] = el.id.split('-');
+  updateMessage(section, Number(index), el.value);
+}
+
+function toggleEmojiMenu(button) {
+  const menu = button.nextElementSibling;
+  const isVisible = menu.classList.contains('show');
+  document.querySelectorAll('.emoji-menu').forEach(m => m.classList.remove('show'));
+  if (!isVisible) menu.classList.add('show');
+}
+
+function copySelectedText() {
+  if (!currentTextId) return alert('Selecione uma caixa!');
+  const el = document.getElementById(currentTextId);
+  el.select();
+  document.execCommand('copy');
+  alert('Texto copiado!');
+}
+
+function insertEmoji(emoji) {
+  if (!currentTextId) return alert('Selecione uma caixa!');
+  const el = document.getElementById(currentTextId);
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+  el.value = el.value.slice(0, start) + emoji + el.value.slice(end);
+  el.focus();
+  el.setSelectionRange(start + emoji.length, start + emoji.length);
+  updateDataFromElement(el);
+}
+
+function changePrimaryColor(color) {
+  document.documentElement.style.setProperty('--color-primary', color);
+  localStorage.setItem('primaryColor', color);
+}
+
+function resetConfig() {
+  localStorage.clear();
+  location.reload();
+}
+
+function filterSections() {
+  const query = document.getElementById('searchBox').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(card => {
+    const title = card.querySelector('h3').innerText.toLowerCase();
+    card.style.display = title.includes(query) ? '' : 'none';
+  });
+}
+
+function filterEmojis(input) {
+  const query = input.value.toLowerCase();
+  const items = input.parentElement.querySelectorAll('.emoji-item');
+  items.forEach(item => {
+    item.style.display = item.textContent.includes(query) ? 'inline-block' : 'none';
+  });
+}
+
+function applyTheme(mode) {
+  document.body.classList.remove('light-mode', 'dark-mode');
+  if (mode === 'light') {
+    document.body.classList.add('light-mode');
+  } else if (mode === 'dark') {
+    document.body.classList.add('dark-mode');
+  } else {
+    const hour = new Date().getHours();
+    if (hour >= 7 && hour < 18) {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.add('dark-mode');
+    }
+  }
+}
+
+function changeTheme(mode) {
+  localStorage.setItem('themeMode', mode);
+  applyTheme(mode);
+}
+
+function loadTheme() {
+  const savedTheme = localStorage.getItem('themeMode') || 'auto';
+  document.getElementById('themeSelector').value = savedTheme;
+  applyTheme(savedTheme);
+}
+
+function autoUpdateTheme() {
+  setInterval(() => {
+    const mode = localStorage.getItem('themeMode') || 'auto';
+    if (mode === 'auto') applyTheme('auto');
+  }, 60000);
+}
+
+window.addEventListener('click', function(e) {
+  if (!e.target.closest('.emoji-dropdown')) {
+    document.querySelectorAll('.emoji-menu').forEach(m => m.classList.remove('show'));
+  }
+});
+
+
+
+document.addEventListener('mouseup', () => {
+  if (selectionBox) selectionBox.remove();
+  isSelecting = false;
+});
+
+
+function exportarConfiguracoes() {
+  const midiasPorGrupo = {};
+
+  for (const [grupo, secoes] of Object.entries(groups)) {
+    midiasPorGrupo[grupo] = {};
+    for (const secao in secoes) {
+      if (mediaStorage[secao]) {
+        midiasPorGrupo[grupo][secao] = mediaStorage[secao];
+      }
+    }
+  }
+
+  const configuracoes = {
+    grupos: groups,
+    grupoAtual: currentGroup,
+    emojis: emojiData,
+    midias: midiasPorGrupo,
+    fixadas: pinnedSections,
+    tema: localStorage.getItem("themeMode") || "auto",
+    corPrimaria: localStorage.getItem("primaryColor") || "#f57c00"
+  };
+
+  const blob = new Blob([JSON.stringify(configuracoes, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  const agora = new Date();
+  const dataHora = agora.toISOString().replace(/T/, '_').replace(/:/g, '-').replace(/\..+/, '');
+  a.download = `configuracoes_saudacoes_${dataHora}.json`;
+
+  a.href = url;
+  a.click();
+}
+
+
+function importarConfiguracoes() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const config = JSON.parse(reader.result);
+
+        if (config.tema) {
+          localStorage.setItem("themeMode", config.tema);
+          document.getElementById("themeSelector").value = config.tema;
+          applyTheme(config.tema);
+        }
+
+        if (config.corPrimaria) {
+          changePrimaryColor(config.corPrimaria);
+        }
+
+        if (config.grupos) groups = config.grupos;
+        if (config.grupoAtual) {
+          currentGroup = config.grupoAtual;
+          localStorage.setItem("currentGroup", currentGroup);
+        }
+
+        if (config.emojis) emojiData = config.emojis;
+        if (config.fixadas) pinnedSections = config.fixadas;
+
+        // Reconstrói o mediaStorage
+        mediaStorage = {};
+        if (config.midias) {
+          for (const [grupo, secoes] of Object.entries(config.midias)) {
+            for (const [secao, midias] of Object.entries(secoes)) {
+              mediaStorage[secao] = midias;
+            }
+          }
+        }
+
+        saveToLocalStorage();
+        render();
+      } catch (err) {
+        alert("Erro ao importar configurações: " + err.message);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
+  input.click();
+}
+
+window.onload = () => {
+  loadFromLocalStorage();       // 1. Carrega os dados
+  populateGroupSelector();      // 2. Preenche a lista suspensa dos grupos
+  loadTheme();                  // 3. Aplica o tema
+  render();                     // 4. Renderiza as caixas
+  autoUpdateTheme();            // 5. Atualiza o tema dinamicamente (opcional)
+}
+
+function excluirSelecionadas() {
+  const cards = document.querySelectorAll('.select-toggle:checked');
+  cards.forEach(cb => {
+    const title = cb.closest('.card')?.querySelector('h3')?.innerText;
+    if (title) delete groups[currentGroup][title];
+  });
+  saveToLocalStorage();
+  render();
+}
+
+
+function renameSection(oldName) {
+  const newName = prompt("Digite o novo nome para a saudação:", oldName);
+  if (newName && newName !== oldName) {
+    if (groups[currentGroup][newName]) {
+      alert("Já existe uma saudação com esse nome!");
+      return;
+    }
+    groups[currentGroup][newName] = groups[currentGroup][oldName];
+    delete groups[currentGroup][oldName];
+    saveToLocalStorage();
+    render();
+  }
+}
+
+
+function triggerFileInput(section) {
+  document.getElementById(`input-${section}`).click();
+}
+
+function handleMediaUpload(e, section) {
+  const files = Array.from(e.target.files);
+  processMediaFiles(files, section);
+}
+
+function handleMediaDrop(e, section) {
+  e.preventDefault();
+  const files = Array.from(e.dataTransfer.files);
+  processMediaFiles(files, section);
+}
+
+function processMediaFiles(files, section) {
+  mediaStorage[section] ||= [];
+
+  files.forEach(file => {
+    // Use o nome do arquivo diretamente como referência.
+    const fileUrl = 'file:///' + file.name.replace(/\\/g, '/');
+
+    mediaStorage[section].push({
+      name: file.name,
+      type: file.type,
+      data: fileUrl
+    });
+  });
+
+  render();
+}
+
+
+function addMediaUrl(section) {
+  const url = prompt("Cole a URL do arquivo (imagem, vídeo, áudio, PDF):");
+  if (!url) return;
+  const name = url.split('/').pop().split('?')[0] || 'arquivo';
+  let type = '';
+  const ext = name.split('.').pop().toLowerCase();
+  if (ext === 'jpg' || ext === 'jpeg') type = 'image/jpeg';
+  else if (ext === 'png') type = 'image/png';
+  else if (ext === 'gif') type = 'image/gif';
+  else if (ext === 'webp') type = 'image/webp';
+  else if (ext === 'mp4') type = 'video/mp4';
+  else if (ext === 'webm') type = 'video/webm';
+  else if (ext === 'ogg') type = 'video/ogg';
+  else if (ext === 'mp3') type = 'audio/mpeg';
+  else if (ext === 'wav') type = 'audio/wav';
+  else if (ext === 'pdf') type = 'application/pdf';
+  mediaStorage[section] ||= [];
+  mediaStorage[section].push({ name, type, data: url });
+  render();
+}
+
+function generateMediaPreview(section) {
+  const items = mediaStorage[section] || [];
+  return items.map((item, index) => {
+    const url = item.data || '';
+    const isImage = item.type.startsWith('image/') || /\.(jpe?g|png|gif|webp)$/i.test(url);
+    const isVideo = item.type.startsWith('video/') || /\.(mp4|webm|ogg)$/i.test(url);
+    const isAudio = item.type.startsWith('audio/') || /\.(mp3|wav|ogg)$/i.test(url);
+    const isPDF = item.type === 'application/pdf' || /\.pdf$/i.test(url);
+
+    const downloadButton = `<button onclick="downloadMedia('${item.data}', '${item.name}')" title="Baixar">⬇️</button>`;
+    const copyButton = ''; // botão de copiar imagem removido
+    const zoomButton = `<button onclick="window.open('${item.data}', '_blank')" title="Abrir em nova aba">🔍</button>`;
+    const deleteButton = `<button onclick="deleteMedia('${section}', ${index})" title="Excluir">❌</button>`;
+
+    let mediaTag = '';
+const isYouTube = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/.exec(url);
+
+if (isYouTube) {
+  const videoId = isYouTube[1];
+  mediaTag = `<iframe width="280" height="160" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+} else if (isImage) {
+  mediaTag = `<img src="${item.data}" style="max-height:120px;">`;
+} else if (isVideo) {
+  mediaTag = `<video controls src="${item.data}" style="max-height:160px;"></video>`;
+} else if (isAudio) {
+  mediaTag = `<audio controls src="${item.data}" style="width:200px;"></audio>`;
+} else if (isPDF) {
+  mediaTag = `<embed src="${item.data}" type="application/pdf" width="100%" height="200px">`;
+} else {
+  mediaTag = `<div>Arquivo: ${item.name}</div>`;
+}
+	
+
+    return `<div style="position: relative; display: inline-block; margin-bottom: 10px;">
+              ${mediaTag}
+              <div style="position: absolute; top: 4px; right: 4px; display: flex; gap: 4px; flex-direction: column;">
+                ${zoomButton}
+                ${downloadButton}
+                ${copyButton}
+                ${deleteButton}
+              </div>
+            </div>`;
+  }).join('');
+}
+
+
+function deleteMedia(section, index) {
+  if (!mediaStorage[section]) return;
+  mediaStorage[section].splice(index, 1);
+  localStorage.setItem('mediaStorage', JSON.stringify(mediaStorage));
+  render();
+}
+
+function downloadMedia(dataUrl, filename) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = filename;
+  a.click();
+}
+
+async function copyMediaToClipboard(dataUrl, type) {
+  if (!type.startsWith("image/")) {
+    alert("Apenas imagens podem ser copiadas para a área de transferência.");
+    return;
+  }
+
+  try {
+    const response = await fetch(dataUrl);
+    const blob = await response.blob();
+    await navigator.clipboard.write([
+      new ClipboardItem({ [type]: blob })
+    ]);
+    alert('Imagem copiada para a área de transferência!');
+  } catch (err) {
+    alert('Erro ao copiar imagem: ' + err.message);
+  }
+}
+
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
+
+
+function addMediaFromPath(section) {
+  let path = prompt("Cole o caminho local completo do arquivo (ex: C:\\Users\\Lucas\\Downloads\\imagem.png):");
+  if (!path) return;
+  
+  // Remove aspas duplas no início e no fim, se existirem
+  path = path.trim().replace(/^"(.*)"$/, '$1');
+
+  const name = path.split(/[\\\/]/).pop();
+  const fileUrl = 'file:///' + path.replace(/\\/g, '/');
+
+  mediaStorage[section] ||= [];
+  mediaStorage[section].push({ name, type: '', data: fileUrl });
+
+  saveToLocalStorage();
+  render();
+}
+
+</script>
+<!-- SortableJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js">
+new Sortable(document.getElementById('sections'), {
+  handle: '.card-header',
+  animation: 150,
+  ghostClass: 'drag-ghost',
+  filter: '.pinned',
+  onMove: evt => !evt.related.classList.contains('pinned'),
+  onMove: evt => {
+    return !evt.related.classList.contains('pinned');
+  }
+});
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
+</script>
+<script>
+let pinnedSections = JSON.parse(localStorage.getItem('pinnedSections') || '{}');
+let selectedSections = new Set();
+
+function togglePin(section) {
+  pinnedSections[section] = !pinnedSections[section];
+  localStorage.setItem('pinnedSections', JSON.stringify(pinnedSections));
+  render();
+}
+
+function toggleSectionSelection(section) {
+  if (selectedSections.has(section)) {
+    selectedSections.delete(section);
+  } else {
+    selectedSections.add(section);
+  }
+  render();
+}
+
+function moveSelectedSections() {
+  const items = Array.from(selectedSections);
+  if (items.length === 0) {
+    alert("Nenhuma saudação selecionada.");
+    return;
+  }
+
+  const groupNames = Object.keys(groups).filter(g => g !== currentGroup);
+  const options = groupNames.map((g, i) => `${i + 1} - ${g}`).join('\n');
+  const choice = prompt(`Mover saudação(s) para:
+${options}
+0 - Novo grupo`);
+
+  if (choice === null) return;
+
+  let destino = null;
+  if (choice === "0") {
+    const nomeNovo = prompt("Nome do novo grupo:");
+    if (!nomeNovo) return;
+    groups[nomeNovo] = {};
+    destino = nomeNovo;
+  } else {
+    const idx = parseInt(choice) - 1;
+    if (!groupNames[idx]) return alert("Grupo inválido.");
+    destino = groupNames[idx];
+  }
+
+  items.forEach(section => {
+    groups[destino][section] = groups[currentGroup][section];
+    delete groups[currentGroup][section];
+    selectedSections.delete(section);
+  });
+
+  saveToLocalStorage();
+  render();
+}
+
+  // Inicializa a funcionalidade de arrastar nas caixas
+  new Sortable(document.getElementById('sections'), {
+  handle: '.card-header',
+  animation: 150,
+  ghostClass: 'drag-ghost',
+  filter: '.pinned',
+  onMove: evt => !evt.related.classList.contains('pinned')
+  });
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
+</script>
+<script>
+let clipboardSections = [];
+
+document.addEventListener('keydown', function(e) {
+  const tag = document.activeElement.tagName;
+  if (tag === 'TEXTAREA' || tag === 'INPUT') return;
+
+  if (!e.ctrlKey) return;
+
+  const key = e.key.toLowerCase();
+  e.preventDefault();
+
+  if (key === 'a') {
+    document.querySelectorAll('.card').forEach(card => {
+      const title = card.querySelector('h3')?.innerText;
+      if (title) selectedSections.add(title);
+    });
+    render();
+  }
+
+  if (key === 'c') {
+    clipboardSections = Array.from(selectedSections).map(title => ({
+      title,
+      messages: [...groups[currentGroup][title]]
+    }));
+    alert('Seções copiadas!');
+  }
+
+  if (key === 'x') {
+    clipboardSections = Array.from(selectedSections).map(title => ({
+      title,
+      messages: [...groups[currentGroup][title]]
+    }));
+    selectedSections.forEach(title => {
+      delete groups[currentGroup][title];
+    });
+    selectedSections.clear();
+    saveToLocalStorage();
+    render();
+    alert('Seções recortadas!');
+  }
+
+  if (key === 'v') {
+    if (clipboardSections.length === 0) {
+      alert('Nada copiado ou recortado.');
+      return;
+    }
+
+    clipboardSections.forEach(({ title, messages }) => {
+      let newTitle = title;
+      let suffix = 1;
+      while (groups[currentGroup][newTitle]) {
+        const padded = String(suffix).padStart(2, '0');
+        newTitle = `${title} (${padded})`;
+        suffix++;
+      }
+      groups[currentGroup][newTitle] = [...messages];
+    });
+
+    saveToLocalStorage();
+    render();
+    alert('Seções coladas!');
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (selectedSections.size === 0) return;
+
+    const confirmDelete = confirm(`Deseja apagar ${selectedSections.size} saudação(ões) selecionada(s)?`);
+    if (!confirmDelete) return;
+
+    selectedSections.forEach(title => {
+      delete groups[currentGroup][title];
+    });
+    selectedSections.clear();
+    saveToLocalStorage();
+    render();
+    alert('Seções excluídas.');
+  }
+});
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
+</script>
+
+`
+<!-- POPUP DE VISUALIZAÇÃO -->
+<!-- Modal Base64 -->
+<div id="dialogoBase64" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:10000;">
+<div style="background:var(--color-background); color:var(--color-text); padding:20px; border-radius:10px; max-width:500px; width:90%; position:relative;">
+<h3>Importar mídia via Base64</h3>
+<textarea class="text-editable-area" id="base64Input" placeholder="Cole o código base64 aqui..." style="width:100%; height:150px; margin-bottom:10px;"></textarea>
+<div style="display:flex; justify-content: flex-end; gap: 10px;">
+<button onclick="confirmarImportacaoBase64()">Confirmar</button>
+<button onclick="fecharDialogoBase64()">Cancelar</button>
+</div>
+</div>
+</div>
+<script>
+function abrirDialogoBase64() {
+  if (!currentTextId) return alert('Selecione uma caixa de texto primeiro.');
+  document.getElementById('dialogoBase64').style.display = 'flex';
+}
+
+function fecharDialogoBase64() {
+  document.getElementById('dialogoBase64').style.display = 'none';
+  document.getElementById('base64Input').value = '';
+}
+
+function confirmarImportacaoBase64() {
+  const base64 = document.getElementById('base64Input').value.trim();
+  if (!base64) return alert("Cole um código base64 válido.");
+  if (!currentTextId) return alert("Selecione uma caixa de texto primeiro.");
+  const [section] = currentTextId.split('-');
+  const matches = base64.match(/^data:(.*?);base64,/);
+  if (!matches) {
+    alert("Formato inválido. Certifique-se de incluir o prefixo data:...");
+    return;
+  }
+  const mimeType = matches[1];
+  mediaStorage[section] ||= [];
+  mediaStorage[section].push({
+    name: 'importado.' + mimeType.split('/')[1],
+    type: mimeType,
+    data: base64
+  });
+  localStorage.setItem('mediaStorage', JSON.stringify(mediaStorage));
+  fecharDialogoBase64();
+  render();
+}
+
+document.querySelectorAll('textarea').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+});
+
+</script>
+</body>
+</html>
+
+<script>
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--color-primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 9999;
+    font-family: 'Inter', sans-serif;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+</script>
