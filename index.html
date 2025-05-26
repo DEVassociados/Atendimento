@@ -184,6 +184,7 @@ body.dark-mode .card { background: #1e1e1e; border-color: #333; }
 </header>
 <div class="container">
 <div class="controls">
+<button onclick="baixarPaginaHTML()">⬇️ Baixar Página HTML</button>
 <input id="searchBox" oninput="filterSections()" placeholder="Buscar..." type="text"/>
 <input id="newSection" placeholder="Nova saudação..." type="text"/>
 <button onclick="addSection()">Adicionar</button>
@@ -1165,6 +1166,24 @@ document.querySelectorAll('textarea').forEach(el => {
   el.addEventListener('mousedown', e => e.stopPropagation());
 });
 
+</script>
+
+<script>
+function baixarPaginaHTML() {
+  fetch(window.location.href)
+    .then(response => response.text())
+    .then(html => {
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const nomeArquivo = 'pagina_DEV_associados_' + new Date().toISOString().slice(0,19).replace(/[:T]/g, '-') + '.html';
+      a.href = url;
+      a.download = nomeArquivo;
+      a.click();
+      URL.revokeObjectURL(url);
+    })
+    .catch(err => alert("Erro ao baixar a página: " + err.message));
+}
 </script>
 </body>
 </html>
